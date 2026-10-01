@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Active Orders - Le Gourmet{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-serif font-bold text-gray-900">Active Orders</h1>
+    <p class="text-gray-600 mt-2">Manage customer orders here.</p>
+</div>
+
+<div class="bg-white shadow overflow-hidden sm:rounded-md">
+    <ul class="divide-y divide-gray-200">
+        {% for order in orders %}
+            <li>
+                <div class="px-4 py-4 sm:px-6">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm font-medium text-primary truncate">
+                            Order #{{ order.id }}
+                        </p>
+                        <div class="ml-2 flex-shrink-0 flex">
+                            <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                {% if order.status == 'Pending' %}bg-yellow-100 text-yellow-800
+                                {% elif order.status == 'Cooking' %}bg-blue-100 text-blue-800
+                                {% elif order.status == 'Served' %}bg-green-100 text-green-800
+                                {% endif %}">
+                                {{ order.status }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-2 sm:flex sm:justify-between">
+                        <div class="sm:flex">
+                            <p class="flex items-center text-sm text-gray-500">
+                                {% if order.table %}
+                                    Table {{ order.table.table_number }}
+                                {% else %}
+                                    Takeout
+                                {% endif %}
+                            </p>
+                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
+                                Total: ${{ order.total_amount }}
+                            </p>
+                        </div>
+                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                            <p>
+                                Placed at <time datetime="{{ order.created_at|date:'c' }}">{{ order.created_at|date:"H:i" }}</time>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <div class="mt-4 bg-gray-50 p-4 rounded-md">
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Items</h4>
+                        <ul class="text-sm text-gray-700 space-y-1">
+                            {% for item in order.items.all %}
+                                <li>{{ item.quantity }}x {{ item.menu_item.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Update Status Form -->
+                    <div class="mt-4 flex justify-end">
+                        <form method="POST" action="{% url 'update_order_status' order.id %}" class="flex items-center space-x-2">
+                            {% csrf_token %}
+                            <select name="status" class="block w-full pl-3 pr-10 py-1.5 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                                <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Cooking" {% if order.status == 'Cooking' %}selected{% endif %}>Cooking</option>
+                                <option value="Served" {% if order.status == 'Served' %}selected{% endif %}>Served</option>
+                                <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+                            </select>
+                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-primary hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Update
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        {% empty %}
+            <li class="px-4 py-8 text-center text-gray-500">
+                No active orders at the moment.
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

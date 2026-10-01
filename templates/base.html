@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Le Gourmet | Fine Dining{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#b45309', // amber-700 for a richer, more premium feel
+                        secondary: '#9f1239', // rose-700
+                        background: '#fdfbf7', // slightly warmer off-white
+                        surface: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'], // Swapped to Playfair for a very elegant restaurant vibe
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="bg-background text-gray-800 font-sans min-h-screen flex flex-col antialiased selection:bg-primary selection:text-white">
+    <!-- Navigation -->
+    <header class="bg-surface/90 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="/" class="font-serif font-bold text-3xl tracking-tight text-gray-900 hover:text-primary transition-colors">
+                        Le Gourmet<span class="text-primary">.</span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-gray-600 hover:text-primary uppercase tracking-widest transition-colors">Menu</a>
+                    <a href="{% url 'reserve' %}" class="text-sm font-medium text-gray-600 hover:text-primary uppercase tracking-widest transition-colors">Reservations</a>
+                    {% if user.is_staff %}
+                        <div class="h-4 w-px bg-gray-300"></div>
+                        <a href="{% url 'staff_dashboard' %}" class="text-sm font-medium text-gray-400 hover:text-primary uppercase tracking-widest transition-colors">Staff Dashboard</a>
+                    {% endif %}
+                    <a href="{% url 'order' %}" class="bg-gray-900 text-white px-6 py-2.5 rounded-none hover:bg-primary text-sm font-medium uppercase tracking-widest transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-primary/30">Order Online</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full">
+        <!-- Messages -->
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                {% for message in messages %}
+                    <div class="p-4 border-l-4 {% if message.tags == 'error' %}border-red-500 bg-red-50 text-red-800{% elif message.tags == 'success' %}border-green-500 bg-green-50 text-green-800{% else %}border-blue-500 bg-blue-50 text-blue-800{% endif %} shadow-sm mb-4 animate-fade-in-down" role="alert">
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white border-t border-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
+                <div>
+                    <span class="font-serif font-bold text-2xl tracking-tight">Le Gourmet.</span>
+                    <p class="mt-2 text-sm text-gray-400">A symphony of flavors, crafted with passion.</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-gray-400">123 Culinary Avenue, Food District</p>
+                    <p class="text-sm text-gray-400 mt-1">contact@legourmet.com | (555) 123-4567</p>
+                </div>
+                <div class="md:text-right">
+                    <p class="text-sm text-gray-500">
+                        &copy; {% now "Y" %} Le Gourmet. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

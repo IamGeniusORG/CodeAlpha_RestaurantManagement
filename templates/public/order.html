@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Minimal Header for Orders -->
+<div class="bg-gray-900 py-16 text-center text-white mb-12">
+    <h2 class="text-xs font-bold text-primary uppercase tracking-[0.2em] mb-2">To Your Table or Door</h2>
+    <h1 class="text-4xl font-serif">Place an Order</h1>
+</div>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <form method="POST" action="{% url 'order' %}" class="bg-white p-8 sm:p-12 shadow-2xl rounded-xl border border-gray-100">
+        {% csrf_token %}
+        
+        <!-- Table Selection -->
+        <div class="mb-10 pb-10 border-b border-gray-100">
+            <h3 class="text-xl font-serif text-gray-900 mb-6 flex items-center">
+                <svg class="w-5 h-5 mr-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                Dining Preference
+            </h3>
+            <label for="table_id" class="block text-sm font-medium text-gray-500 mb-2 uppercase tracking-wide">Select Table (Leave blank for Takeout)</label>
+            <div class="relative">
+                <select name="table_id" id="table_id" class="appearance-none block w-full bg-gray-50 border border-gray-200 text-gray-700 py-4 px-4 pr-8 rounded-none leading-tight focus:outline-none focus:bg-white focus:border-primary transition-colors">
+                    <option value="">-- Takeout / To-Go --</option>
+                    {% for table in tables %}
+                        <option value="{{ table.id }}">Table {{ table.table_number }} (Capacity: {{ table.capacity }})</option>
+                    {% endfor %}
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Items List -->
+        <div class="mb-10">
+            <h3 class="text-xl font-serif text-gray-900 mb-6 flex items-center">
+                <svg class="w-5 h-5 mr-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                Select Your Items
+            </h3>
+            
+            <div class="space-y-4">
+                {% for item in menu_items %}
+                <div class="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50 transition border border-transparent hover:border-gray-100 group">
+                    <div class="flex-1 pr-4">
+                        <label for="item_{{ item.id }}" class="text-base font-medium text-gray-900 cursor-pointer group-hover:text-primary transition-colors">{{ item.name }}</label>
+                        <p class="text-sm font-medium text-primary mt-1">${{ item.price }}</p>
+                    </div>
+                    <div class="w-24">
+                        <input type="number" name="item_{{ item.id }}" id="item_{{ item.id }}" min="0" value="0" class="block w-full bg-gray-50 border border-gray-200 text-gray-900 py-2 px-3 rounded-none text-center focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all">
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-6 text-center text-gray-400 font-serif italic border border-dashed border-gray-200">
+                    No items available to order currently.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="w-full flex justify-center items-center py-4 px-8 border border-transparent shadow-xl shadow-primary/20 text-sm font-bold tracking-[0.2em] uppercase text-white bg-gray-900 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 transform hover:-translate-y-1">
+            Submit Order
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+    </form>
+</div>
+{% endblock %}

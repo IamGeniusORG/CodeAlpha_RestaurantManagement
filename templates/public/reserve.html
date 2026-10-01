@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col lg:flex-row border border-gray-100">
+        
+        <!-- Image Side -->
+        <div class="lg:w-5/12 relative h-64 lg:h-auto">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Reserved Table" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gray-900/40 mix-blend-multiply"></div>
+            <div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12 text-white">
+                <h3 class="font-serif text-3xl font-bold mb-2">An Evening to Remember</h3>
+                <p class="text-white/80 font-light">Join us for an unforgettable dining experience.</p>
+            </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="lg:w-7/12 py-10 px-6 sm:px-10 lg:px-16 lg:py-16">
+            <div class="mb-10 text-center lg:text-left">
+                <h2 class="text-xs font-bold text-primary uppercase tracking-[0.2em] mb-2">Book Your Table</h2>
+                <h3 class="text-3xl font-serif text-gray-900">Make a Reservation</h3>
+            </div>
+
+            <form method="POST" action="{% url 'reserve' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="rounded-lg bg-red-50 p-4 border border-red-100">
+                        <div class="flex">
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Please review your submission:</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {% for field in form %}
+                    <div class="{% if field.name == 'reservation_time' or field.name == 'table' %}col-span-1{% else %}col-span-1 sm:col-span-2{% endif %}">
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="mt-1 text-xs text-red-600">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-none shadow-lg shadow-primary/20 text-sm font-medium text-white bg-gray-900 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 transform hover:-translate-y-0.5 uppercase tracking-widest">
+                        Confirm Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative bg-gray-900 h-96 md:h-[32rem] flex items-center justify-center overflow-hidden mb-16">
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Restaurant interior" class="w-full h-full object-cover opacity-40">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/90"></div>
+    </div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 tracking-tight">Our Culinary Vision</h1>
+        <p class="text-lg md:text-xl text-gray-300 font-light tracking-wide max-w-2xl mx-auto">Sourced locally, crafted masterfully. Experience the finest ingredients brought to life by our executive chefs.</p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <div class="text-center mb-16">
+        <h2 class="text-xs font-bold text-primary uppercase tracking-[0.3em] mb-3">Discover</h2>
+        <h3 class="text-3xl font-serif text-gray-900">The Menu</h3>
+        <div class="h-1 w-16 bg-primary mx-auto mt-6"></div>
+    </div>
+
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-12">
+        {% for item in menu_items %}
+        <div class="group flex flex-col sm:flex-row bg-white hover:bg-gray-50 transition-colors duration-300 rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-md">
+            <div class="sm:w-1/3 h-48 sm:h-auto overflow-hidden relative">
+                <!-- Using Generated AI Images -->
+                <img src="{% static 'images/' %}{{ item.name|lower|cut:' ' }}.jpg" alt="{{ item.name }}" onerror="this.src='https://source.unsplash.com/800x600/?culinary,{{ item.name|urlencode }}'" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+            <div class="p-6 sm:w-2/3 flex flex-col justify-center">
+                <div class="flex justify-between items-baseline mb-2 border-b border-gray-200 border-dashed pb-2">
+                    <h4 class="text-xl font-serif font-bold text-gray-900">{{ item.name }}</h4>
+                    <span class="text-lg font-medium text-primary ml-4">${{ item.price }}</span>
+                </div>
+                <p class="text-gray-500 font-light leading-relaxed text-sm mt-3">{{ item.description }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-16 bg-white rounded-lg border border-gray-100">
+            <p class="text-gray-400 font-serif italic text-lg">Our chefs are currently preparing a new seasonal menu.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
